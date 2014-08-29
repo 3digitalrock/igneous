@@ -4,10 +4,8 @@
     "main": "server.js",
     "private": true,
     "dependencies": {
-        "express": "*",
         "rethinkdb": "*",
-        "body-parser": "*",
-        "cors": "*"
+        "apiserver": "*"
     },
     "repository": {
         "type": "git",
