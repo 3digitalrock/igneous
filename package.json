@@ -5,7 +5,8 @@
     "private": true,
     "dependencies": {
         "rethinkdb": "*",
-        "restify": "*"
+        "restify": "*",
+        "restify-validator2": "*"
     },
     "repository": {
         "type": "git",
