@@ -1,23 +1,20 @@
 // load requirements
-var ApiServer = require('apiserver'),
+var restify = require('restify'),
     modules = require('./modules');
-    
-    
-var apiserver = new ApiServer({
-  standardHeaders: {
-    'cache-control': 'max-age=0, no-cache, no-store, must-revalidate',
-    'x-awesome-field': 'awezing value'
-  },
-  timeout: 2000
-})
+
+var server = restify.createServer({
+  name: 'igneous',
+  version: '0.1.0'
+});
 
 // API v1
-apiserver.addModule('v1', 'videos', new modules.Videos());
-apiserver.router.addRoutes([
-    ["/v1/videos", "v1/videos#index"],
-    ["/v1/videos/:id", "v1/videos#video"]
-]);
+server.use(restify.bodyParser());
+server.get('/videos', function(req, res, next){modules.Videos.getAll(req, res, next)});
+server.post('/videos', function(req, res, next){modules.Videos.create(req, res, next)});
+server.get('/videos/:id', function(req, res, next){modules.Videos.getSingle(req, res, next)});
+server.patch('/videos/:id', function(req, res, next){modules.Videos.update(req, res, next)});
+server.del('/videos/:id', function(req, res, next){modules.Videos.delete(req, res, next)});
 
-apiserver.listen(3001, function () {
+server.listen(3001, function () {
     console.info(' ✈ ApiServer listening at http://localhst:3001');
 });
