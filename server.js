@@ -21,6 +21,12 @@ server.get('/channels/:id', function(req, res, next){modules.Channels.getSingle(
 server.patch('/channels/:id', function(req, res, next){modules.Channels.update(req, res, next)});
 server.del('/channels/:id', function(req, res, next){modules.Channels.delete(req, res, next)});
 
+server.get('/studios', function(req, res, next){modules.Studios.getAll(req, res, next)});
+server.post('/studios', function(req, res, next){modules.Studios.create(req, res, next)});
+server.get('/studios/:id', function(req, res, next){modules.Studios.getSingle(req, res, next)});
+server.patch('/studios/:id', function(req, res, next){modules.Studios.update(req, res, next)});
+server.del('/studios/:id', function(req, res, next){modules.Studios.delete(req, res, next)});
+
 server.listen(3001, function () {
     console.info(' ✈ ApiServer listening at http://localhst:3001');
 });
