@@ -1,7 +1,6 @@
 // load requirements
 var restify = require('restify'),
-    models = require('./models'),
-    ohno = require('./lib/rethinkdb');
+    models = require('./models');
 
 var server = restify.createServer({
   name: 'igneous',
