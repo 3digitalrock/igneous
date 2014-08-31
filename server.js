@@ -15,11 +15,11 @@ server.get('/videos/:id', function(req, res, next){modules.Videos.getSingle(req,
 server.patch('/videos/:id', function(req, res, next){modules.Videos.update(req, res, next)});
 server.del('/videos/:id', function(req, res, next){modules.Videos.delete(req, res, next)});
 
-/*server.get('/channels', function(req, res, next){modules.Channels.getAll(req, res, next)});
+server.get('/channels', function(req, res, next){modules.Channels.getAll(req, res, next)});
 server.post('/channels', function(req, res, next){modules.Channels.create(req, res, next)});
 server.get('/channels/:id', function(req, res, next){modules.Channels.getSingle(req, res, next)});
 server.patch('/channels/:id', function(req, res, next){modules.Channels.update(req, res, next)});
-server.del('/channels/:id', function(req, res, next){modules.Channels.delete(req, res, next)});*/
+server.del('/channels/:id', function(req, res, next){modules.Channels.delete(req, res, next)});
 
 server.listen(3001, function () {
     console.info(' ✈ ApiServer listening at http://localhst:3001');
