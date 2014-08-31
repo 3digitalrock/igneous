@@ -9,14 +9,14 @@ exports.getAll = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
-  db.getVideo('videos', id, function(err, item){
+  db.getSingle('videos', id, function(err, item){
     res.send(200, item);
   });
 };
 
 exports.create = function(req, res, next) {
   var info = req.body;
-  db.createVideo('videos', info, function(err, videoUrl){
+  db.create('videos', info, function(err, videoUrl){
     res.send(201, videoUrl);
     return next();
   });
@@ -25,7 +25,7 @@ exports.create = function(req, res, next) {
 exports.update = function(req, res, next) {
   var changes = req.body,
       id = req.params.id;
-  db.updateVideo('videos', id, changes, function(err, item){
+  db.update('videos', id, changes, function(err, item){
     res.send(200, item);
     return next();
   });
@@ -33,7 +33,7 @@ exports.update = function(req, res, next) {
 
 exports.delete = function(req, res, next) {
   var id = req.params.id;
-  db.deleteVideo('videos', id, function(err, returnCode){
+  db.delete('videos', id, function(err, returnCode){
     res.send(204);
     return next();
   });
