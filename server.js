@@ -9,6 +9,7 @@ var server = restify.createServer({
 
 // API v1
 server.use(restify.bodyParser());
+server.use(restify.queryParser());
 
 server.get('/videos', function(req, res, next){models.Videos.getAll(req, res, next)});
 server.post('/videos', function(req, res, next){models.Videos.create(req, res, next)});
@@ -29,5 +30,5 @@ server.patch('/studios/:id', function(req, res, next){models.Studios.update(req,
 server.del('/studios/:id', function(req, res, next){models.Studios.delete(req, res, next)});
 
 server.listen(3001, function () {
-    console.info(' ✈ ApiServer listening at http://localhst:3001');
+    console.info(' ✈ ApiServer listening at http://localhost:3001');
 });

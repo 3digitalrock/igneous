@@ -1,8 +1,12 @@
-var db = require('../lib/rethinkdb');
+var db = require('../lib/rethinkdb'),
+    validation = require('../lib/validation');
 
 exports.getAll = function(req, res, next) {
   db.getAll('studios', function(err, items){
-    res.send(200, items);
+    var envelope = {};
+    
+    envelope.videos = items;
+    res.send(200, envelope);
     return next();
   });
 };
@@ -15,10 +19,24 @@ exports.getSingle = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-  var info = req.body;
-  db.create('studios', info, function(err, videoUrl){
-    res.send(201, videoUrl);
-    return next();
+  var required_fields = ['name','description'];
+  validation.doesExist(required_fields, req.body, function(exists, failed){
+    // return missing fields if any are missing
+    if(exists === false){
+      var envelope = {};
+      
+      envelope.message = 'Missing fields';
+      envelope.fields = failed;
+      res.send(400, envelope);
+      
+      return next();
+    } else {
+      // no missing fields, so send to the db
+      db.create('studios', req.body, function(err, url){
+        res.send(201, url);
+        return next();
+      });
+    }
   });
 };
 
