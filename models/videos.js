@@ -19,7 +19,7 @@ exports.getSingle = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-  var required_fields = ['title','description','categories'];
+  var required_fields = ['title','description','categories','studio'];
   validation.doesExist(required_fields, req.body, function(exists, failed){
     // return missing fields if any are missing
     if(exists === false){
