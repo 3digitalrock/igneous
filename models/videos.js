@@ -12,7 +12,7 @@ exports.getAll = function(req, res, next) {
   db.getAll('videos', function(err, items){
     var envelope = {};
     
-    envelope.videos = items;
+    envelope.items = items;
     res.send(200, envelope);
     return next();
   });

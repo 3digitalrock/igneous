@@ -6,21 +6,20 @@ exports.getAll = function(req, res, next) {
   db.getAll('channels', function(err, items){
     var envelope = {};
     
-    envelope.videos = items;
+    envelope.items = items;
     res.send(200, envelope);
     return next();
   });
 };
 
 exports.getSingle = function(req, res, next) {
-  var id = req.params.id;
-  db.getSingle('channels', id, function(err, item){
+  var uid = req.params.uid;
+  db.getSingle('channels', uid, function(err, item){
     res.send(200, item);
   });
 };
 
 exports.create = function(req, res, next) {
-  req.body.uid = chance.string({length: 12, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
   var required_fields = ['name','description'];
   // check for missing fields
   validation.doesExist(required_fields, req.body, function(exists, failed){
@@ -34,9 +33,12 @@ exports.create = function(req, res, next) {
       return next();
     }
   });
+  
+  req.body.uid = req.body.name.replace(/\s+/g, '_');
+  req.body.uid = req.body.uid.toLowerCase();
 
   // no missing fields, so send to the db
-  db.create('studios', req.body, function(err, url){
+  db.create('channels', req.body, function(err, url){
     res.send(201, url);
     return next();
   });
@@ -44,16 +46,16 @@ exports.create = function(req, res, next) {
 
 exports.update = function(req, res, next) {
   var changes = req.body,
-      id = req.params.id;
-  db.update('channels', id, changes, function(err, item){
+      uid = req.params.uid;
+  db.update('channels', uid, changes, function(err, item){
     res.send(200, item);
     return next();
   });
 };
 
 exports.delete = function(req, res, next) {
-  var id = req.params.id;
-  db.delete('channels', id, function(err, returnCode){
+  var uid = req.params.uid;
+  db.delete('channels', uid, function(err, returnCode){
     res.send(204);
     return next();
   });
