@@ -6,7 +6,8 @@
     "dependencies": {
         "rethinkdb": "*",
         "restify": "*",
-        "validator": "*"
+        "validator": "*",
+        "chance": "*"
     },
     "repository": {
         "type": "git",

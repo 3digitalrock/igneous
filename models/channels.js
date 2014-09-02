@@ -1,5 +1,6 @@
 var db = require('../lib/rethinkdb'),
-    validation = require('../lib/validation');
+    validation = require('../lib/validation'),
+    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
 
 exports.getAll = function(req, res, next) {
   db.getAll('channels', function(err, items){
@@ -19,9 +20,10 @@ exports.getSingle = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
+  req.body.uid = chance.string({length: 12, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
   var required_fields = ['name','description'];
+  // check for missing fields
   validation.doesExist(required_fields, req.body, function(exists, failed){
-    // return missing fields if any are missing
     if(exists === false){
       var envelope = {};
       
@@ -30,13 +32,13 @@ exports.create = function(req, res, next) {
       res.send(400, envelope);
       
       return next();
-    } else {
-      // no missing fields, so send to the db
-      db.create('studios', req.body, function(err, url){
-        res.send(201, url);
-        return next();
-      });
     }
+  });
+
+  // no missing fields, so send to the db
+  db.create('studios', req.body, function(err, url){
+    res.send(201, url);
+    return next();
   });
 };
 
