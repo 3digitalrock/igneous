@@ -8,6 +8,7 @@ var server = restify.createServer({
 });
 
 // API v1
+server.use(restify.CORS());
 server.use(restify.bodyParser());
 server.use(restify.queryParser());
 
