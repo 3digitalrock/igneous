@@ -26,7 +26,6 @@ exports.getSingle = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-  req.body.uid = chance.string({length: 12, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
   var required_fields = ['title','description','channels','studio'];
   // check for missing fields
   validation.doesExist(required_fields, req.body, function(exists, failed){
