@@ -21,6 +21,7 @@ server.del('/videos/:id', function(req, res, next){models.Videos.delete(req, res
 server.get('/channels', function(req, res, next){models.Channels.getAll(req, res, next)});
 server.post('/channels', function(req, res, next){models.Channels.create(req, res, next)});
 server.get('/channels/:id', function(req, res, next){models.Channels.getSingle(req, res, next)});
+server.get('/channels/:id/videos', function(req, res, next){models.Channels.getChannelVideos(req, res, next)});
 server.put('/channels/:id', function(req, res, next){models.Channels.update(req, res, next)});
 server.del('/channels/:id', function(req, res, next){models.Channels.delete(req, res, next)});
 

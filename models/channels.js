@@ -12,6 +12,16 @@ exports.getAll = function(req, res, next) {
   });
 };
 
+exports.getChannelVideos = function(req, res, next) {
+  var id = req.params.id;
+  db.getSome('videos', 'channels', id, function(err, items){
+    var envelope = {};
+    
+    envelope.items = items;
+    res.send(200, envelope);
+  });
+};
+
 exports.getSingle = function(req, res, next) {
   var uid = req.params.uid;
   db.getSingle('channels', uid, function(err, item){
