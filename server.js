@@ -28,6 +28,7 @@ server.del('/channels/:id', function(req, res, next){models.Channels.delete(req,
 server.get('/studios', function(req, res, next){models.Studios.getAll(req, res, next)});
 server.post('/studios', function(req, res, next){models.Studios.create(req, res, next)});
 server.get('/studios/:id', function(req, res, next){models.Studios.getSingle(req, res, next)});
+server.get('/studios/:id/videos', function(req, res, next){models.Studios.getStudioVideos(req, res, next)});
 server.put('/studios/:id', function(req, res, next){models.Studios.update(req, res, next)});
 server.del('/studios/:id', function(req, res, next){models.Studios.delete(req, res, next)});
 
