@@ -7,7 +7,8 @@
         "rethinkdb": "*",
         "restify": "*",
         "validator": "*",
-        "chance": "*"
+        "chance": "*",
+        "slug": "*"
     },
     "repository": {
         "type": "git",

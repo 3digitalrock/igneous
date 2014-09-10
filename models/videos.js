@@ -1,5 +1,6 @@
 var db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
+    slug = require('slug'),
     chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
 
 Array.prototype.toLowerCase = function() { 
@@ -53,6 +54,9 @@ exports.create = function(req, res, next) {
   
   // make channel array lowercase. just 'cause.
   req.body.channels.toLowerCase();
+  
+  // "slugify" the title
+  req.body.slug = slug(req.body.title.toLowerCase(), {symbols: false});
 
   // no missing fields, so send to the db
   db.create('videos', req.body, function(err, url){

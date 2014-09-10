@@ -14,7 +14,7 @@ exports.getAll = function(req, res, next) {
 
 exports.getChannelVideos = function(req, res, next) {
   var id = req.params.id;
-  var fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true};
+  var fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
   db.getSome('videos', 'channels', id, fields, function(err, items){
     var envelope = {};
     
