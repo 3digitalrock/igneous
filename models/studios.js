@@ -15,7 +15,11 @@ exports.getAll = function(req, res, next) {
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
   db.getStudio(id, function(err, item){
-    res.send(200, item);
+    if(item===null){
+      res.send(404);
+    } else {
+      res.send(200, item);
+    }
   });
 };
 

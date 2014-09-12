@@ -26,7 +26,11 @@ exports.getChannelVideos = function(req, res, next) {
 exports.getSingle = function(req, res, next) {
   var uid = req.params.id;
   db.getSingle('channels', uid, function(err, item){
-    res.send(200, item);
+    if(item===null){
+      res.send(404);
+    } else {
+      res.send(200, item);
+    }
   });
 };
 
