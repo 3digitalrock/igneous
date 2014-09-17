@@ -4,6 +4,20 @@ var db = require('../lib/rethinkdb'),
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'channels'};
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'name':true, 'description':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   if(req.params.limit){
     if(validation.isInt(req.params.limit)){
       dbArguments.limit = parseInt(req.params.limit, 10);
@@ -20,8 +34,20 @@ exports.getAll = function(req, res, next) {
 };
 
 exports.getChannelVideos = function(req, res, next) {
-  // default fields to return
-  var fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields};
   
   // if a limit was set, make sure it's a number then pass it to the DB
@@ -41,6 +67,20 @@ exports.getChannelVideos = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var uid = req.params.id;
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'name':true, 'description':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   db.getSingle('channels', uid, function(err, item){
     if(item===null){
       res.send(404);

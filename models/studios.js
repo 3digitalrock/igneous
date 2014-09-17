@@ -4,6 +4,20 @@ var db = require('../lib/rethinkdb'),
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'studios'};
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'name':true, 'description':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   if(req.params.limit){
     if(validation.isInt(req.params.limit)){
       dbArguments.limit = parseInt(req.params.limit, 10);
@@ -21,6 +35,20 @@ exports.getAll = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'name':true, 'description':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   db.getStudio(id, function(err, item){
     if(item===null){
       res.send(404);

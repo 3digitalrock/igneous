@@ -11,6 +11,20 @@ Array.prototype.toLowerCase = function() {
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'videos'};
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   if(req.params.limit){
     if(validation.isInt(req.params.limit)){
       dbArguments.limit = parseInt(req.params.limit, 10);
@@ -28,6 +42,20 @@ exports.getAll = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
   db.getSingle('videos', id, function(err, item){
     if(item===null){
       res.send(404);
