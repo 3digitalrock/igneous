@@ -3,7 +3,14 @@ var db = require('../lib/rethinkdb'),
     chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
 
 exports.getAll = function(req, res, next) {
-  db.getAll('studios', function(err, items){
+  var dbArguments = {model: 'studios'};
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+  
+  db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
     envelope.items = items;

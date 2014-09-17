@@ -3,7 +3,14 @@ var db = require('../lib/rethinkdb'),
     chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
 
 exports.getAll = function(req, res, next) {
-  db.getAll('channels', function(err, items){
+  var dbArguments = {model: 'channels'};
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+  
+  db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
     envelope.items = items;
@@ -13,9 +20,18 @@ exports.getAll = function(req, res, next) {
 };
 
 exports.getChannelVideos = function(req, res, next) {
-  var id = req.params.id;
+  // default fields to return
   var fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
-  db.getSome('videos', 'channels', id, fields, function(err, items){
+  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields};
+  
+  // if a limit was set, make sure it's a number then pass it to the DB
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+
+  db.getSome(dbArguments, function(err, items){
     var envelope = {};
     
     envelope.items = items;

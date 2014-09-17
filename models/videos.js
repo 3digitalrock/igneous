@@ -10,7 +10,14 @@ Array.prototype.toLowerCase = function() {
 };
 
 exports.getAll = function(req, res, next) {
-  db.getAll('videos', function(err, items){
+  var dbArguments = {model: 'videos'};
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+  
+  db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
     envelope.items = items;
