@@ -1,6 +1,7 @@
 var db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
-    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
+    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
+    jsonpatch = require('fast-json-patch');
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'channels'};
@@ -116,11 +117,20 @@ exports.create = function(req, res, next) {
 };
 
 exports.update = function(req, res, next) {
-  var changes = req.body,
-      uid = req.params.uid;
-  db.update('channels', uid, changes, function(err, item){
-    res.send(200, item);
-    return next();
+  var id = req.params.id,
+      body = req.body;
+
+  db.getSingle('channels', id, function(err, oldItem){
+    if(oldItem===null){
+      res.send(404);
+    } else {
+      if(jsonpatch.apply(oldItem, body)){
+        db.update('channels', id, oldItem, function(err, newItem){
+          res.send(200,{message: 'Great Success!'});
+          return next();
+        });
+      }
+    }
   });
 };
 

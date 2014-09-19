@@ -1,17 +1,18 @@
 {
-    "name": "3drs-igneous",
-    "version": "0.0.0",
-    "main": "server.js",
-    "private": true,
-    "dependencies": {
-        "rethinkdb": "*",
-        "restify": "*",
-        "validator": "*",
-        "chance": "*",
-        "slug": "*"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://gitlab.com/3-digital-rock/igneous.git"
-    }
+  "name": "3drs-igneous",
+  "version": "0.0.0",
+  "main": "server.js",
+  "private": true,
+  "dependencies": {
+    "chance": "*",
+    "fast-json-patch": "^0.4.0",
+    "restify": "*",
+    "rethinkdb": "*",
+    "slug": "*",
+    "validator": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/3-digital-rock/igneous.git"
+  }
 }

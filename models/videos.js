@@ -1,7 +1,8 @@
 var db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
     slug = require('slug'),
-    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1));
+    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
+    jsonpatch = require('fast-json-patch');
 
 Array.prototype.toLowerCase = function() { 
     for (var i = 0; i < this.length; i++) {
@@ -105,11 +106,20 @@ exports.create = function(req, res, next) {
 };
 
 exports.update = function(req, res, next) {
-  var changes = req.body,
-      id = req.params.id;
-  db.update('videos', id, changes, function(err, item){
-    res.send(200, item);
-    return next();
+  var id = req.params.id,
+      body = req.body;
+
+  db.getSingle('videos', id, function(err, oldItem){
+    if(oldItem===null){
+      res.send(404);
+    } else {
+      if(jsonpatch.apply(oldItem, body)){
+        db.update('videos', id, oldItem, function(err, newItem){
+          res.send(200,{message: 'Great Success!'});
+          return next();
+        });
+      }
+    }
   });
 };
 
