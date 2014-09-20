@@ -32,6 +32,12 @@ exports.getAll = function(req, res, next) {
     }
   }
   
+  if(req.query.offset){
+    if(validation.isInt(req.query.offset)){
+      dbArguments.offset = parseInt(req.query.offset, 10);
+    }
+  }
+  
   db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
