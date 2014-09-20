@@ -5,23 +5,23 @@ var db = require('../lib/rethinkdb'),
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'channels'};
-  var rawFields = req.params.fields;
-  var fields = {};
+  var rawFields = req.query.fields;
+  dbArguments.fields = {};
   
   if(!rawFields){
     // default fields to return
-    fields = {'uid':true, 'name':true, 'description':true};
+    dbArguments.fields = {'uid':true, 'name':true, 'description':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
     for (var i = 0; i < fieldsSplit.length; i++){
-      fields[fieldsSplit[i]] = true;
+      dbArguments.fields[fieldsSplit[i]] = true;
     }
   }
   
-  if(req.params.limit){
-    if(validation.isInt(req.params.limit)){
-      dbArguments.limit = parseInt(req.params.limit, 10);
+  if(req.query.limit){
+    if(validation.isInt(req.query.limit)){
+      dbArguments.limit = parseInt(req.query.limit, 10);
     }
   }
   

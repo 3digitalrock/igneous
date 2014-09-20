@@ -12,23 +12,23 @@ Array.prototype.toLowerCase = function() {
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'videos'};
-  var rawFields = req.params.fields;
-  var fields = {};
-  
+  var rawFields = req.query.fields;
+  dbArguments.fields = {};
+
   if(!rawFields){
     // default fields to return
-    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
     for (var i = 0; i < fieldsSplit.length; i++){
-      fields[fieldsSplit[i]] = true;
+      dbArguments.fields[fieldsSplit[i]] = true;
     }
   }
-  
-  if(req.params.limit){
-    if(validation.isInt(req.params.limit)){
-      dbArguments.limit = parseInt(req.params.limit, 10);
+
+  if(req.query.limit){
+    if(validation.isInt(req.query.limit)){
+      dbArguments.limit = parseInt(req.query.limit, 10);
     }
   }
   
