@@ -17,7 +17,7 @@ exports.getAll = function(req, res, next) {
 
   if(!rawFields){
     // default fields to return
-    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'created': true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -38,6 +38,8 @@ exports.getAll = function(req, res, next) {
     }
   }
   
+  dbArguments.order = 'created';
+  
   db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
@@ -54,7 +56,7 @@ exports.getSingle = function(req, res, next) {
   
   if(!rawFields){
     // default fields to return
-    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'created':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -103,17 +105,28 @@ exports.create = function(req, res, next) {
   
   // "slugify" the title
   req.body.slug = slug(req.body.title.toLowerCase(), {symbols: false});
-
-  // no missing fields, so send to the db
-  db.create('videos', req.body, function(err, url){
-    res.send(201, url);
-    return next();
+  
+  var date = new Date();
+  req.body.created = req.body.updated = date.toISOString();
+  
+  var fields = ['uid','name'];
+  db.getPlucked('studios', req.body.studio, fields, function(err, result){
+    req.body.studio = { 'uid': result.uid, 'name': result.name };
+    
+    db.create('videos', req.body, function(err, url){
+      res.send(201, url);
+      return next();
+    });
   });
+
 };
 
 exports.update = function(req, res, next) {
   var id = req.params.id,
       body = req.body;
+
+  var date = new Date();
+  body.updated = date.toISOString();
 
   db.getSingle('videos', id, function(err, oldItem){
     if(oldItem===null){
