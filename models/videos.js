@@ -108,6 +108,7 @@ exports.create = function(req, res, next) {
   
   var date = new Date();
   req.body.created = req.body.updated = date.toISOString();
+  req.body.status = "0";
   
   var fields = ['uid','name'];
   db.getPlucked('studios', req.body.studio, fields, function(err, result){
