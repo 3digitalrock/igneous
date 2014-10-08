@@ -46,7 +46,7 @@ exports.getChannelVideos = function(req, res, next) {
   
   if(!rawFields){
     // default fields to return
-    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true};
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'status':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -55,7 +55,7 @@ exports.getChannelVideos = function(req, res, next) {
     }
   }
   
-  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields};
+  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields, orderBy: 'created'};
   
   // if a limit was set, make sure it's a number then pass it to the DB
   if(req.params.limit){

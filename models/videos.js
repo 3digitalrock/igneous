@@ -17,7 +17,7 @@ exports.getAll = function(req, res, next) {
 
   if(!rawFields){
     // default fields to return
-    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'created': true};
+    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'created': true, 'status':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
