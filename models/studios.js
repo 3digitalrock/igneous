@@ -40,6 +40,40 @@ exports.getAll = function(req, res, next) {
   });
 };
 
+exports.getStudioVideos = function(req, res, next) {
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'status':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
+  var dbArguments = {model: 'videos', comparison: 'studio', id: req.params.id, fields: fields, order: 'created'};
+  
+  dbArguments.filter = {studio: {uid: req.params.id}};
+  
+  // if a limit was set, make sure it's a number then pass it to the DB
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+
+  db.getSome(dbArguments, function(err, items){
+    var envelope = {};
+    
+    envelope.items = items;
+    res.send(200, envelope);
+  });
+};
+
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
   var rawFields = req.params.fields;

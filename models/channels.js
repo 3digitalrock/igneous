@@ -1,6 +1,5 @@
 var db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
-    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
     jsonpatch = require('fast-json-patch');
 
 exports.getAll = function(req, res, next) {
@@ -55,7 +54,9 @@ exports.getChannelVideos = function(req, res, next) {
     }
   }
   
-  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields, orderBy: 'created'};
+  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields, order: 'created'};
+  
+  dbArguments.filter = "r.row('channels').contains('"+req.params.id+"')";
   
   // if a limit was set, make sure it's a number then pass it to the DB
   if(req.params.limit){
