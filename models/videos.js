@@ -135,9 +135,7 @@ exports.getRelated = function(req, res, next) {
           }
       },
       function(err, results) {
-          var envelope = {};
-          envelope.items = results;
-          res.send(200, envelope);
+          res.send(200, results);
       });
     }
   });
