@@ -40,7 +40,7 @@ exports.getAll = function(req, res, next) {
 };
 
 exports.getChannelVideos = function(req, res, next) {
-  var rawFields = req.params.fields;
+  var rawFields = req.query.fields;
   var fields = {};
   
   if(!rawFields){
@@ -54,18 +54,16 @@ exports.getChannelVideos = function(req, res, next) {
     }
   }
   
-  var dbArguments = {model: 'videos', comparison: 'channels', id: req.params.id, fields: fields, order: 'created'};
-  
-  dbArguments.filter = "r.row('channels').contains('"+req.params.id+"')";
+  var dbArguments = {comparison: 'channels', id: req.params.id, fields: fields, order: 'created'};
   
   // if a limit was set, make sure it's a number then pass it to the DB
-  if(req.params.limit){
-    if(validation.isInt(req.params.limit)){
-      dbArguments.limit = parseInt(req.params.limit, 10);
+  if(req.query.limit){
+    if(validation.isInt(req.query.limit)){
+      dbArguments.limit = parseInt(req.query.limit, 10);
     }
   }
 
-  db.getSome(dbArguments, function(err, items){
+  db.getChannelVideos(dbArguments, function(err, items){
     var envelope = {};
     
     envelope.items = items;

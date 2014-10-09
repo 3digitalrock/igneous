@@ -41,7 +41,7 @@ exports.getAll = function(req, res, next) {
 };
 
 exports.getStudioVideos = function(req, res, next) {
-  var rawFields = req.params.fields;
+  var rawFields = req.query.fields;
   var fields = {};
   
   if(!rawFields){
@@ -60,9 +60,9 @@ exports.getStudioVideos = function(req, res, next) {
   dbArguments.filter = {studio: {uid: req.params.id}};
   
   // if a limit was set, make sure it's a number then pass it to the DB
-  if(req.params.limit){
-    if(validation.isInt(req.params.limit)){
-      dbArguments.limit = parseInt(req.params.limit, 10);
+  if(req.query.limit){
+    if(validation.isInt(req.query.limit)){
+      dbArguments.limit = parseInt(req.query.limit, 10);
     }
   }
 
@@ -76,7 +76,7 @@ exports.getStudioVideos = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
-  var rawFields = req.params.fields;
+  var rawFields = req.query.fields;
   var fields = {};
   
   if(!rawFields){
