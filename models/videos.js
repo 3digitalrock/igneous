@@ -1,6 +1,7 @@
 var db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
     slug = require('slug'),
+    async = require('async'),
     chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
     jsonpatch = require('fast-json-patch');
 
@@ -39,13 +40,16 @@ exports.getAll = function(req, res, next) {
   }
   
   dbArguments.order = 'created';
-  
+
   db.getAll(dbArguments, function(err, items){
-    var envelope = {};
-    
-    envelope.items = items;
-    res.send(200, envelope);
-    return next();
+    if(err){
+      res.send(404);
+    } else {
+      var envelope = {};
+      
+      envelope.items = items;
+      res.send(200, envelope);
+    }
   });
 };
 
@@ -66,12 +70,78 @@ exports.getSingle = function(req, res, next) {
   }
   
   db.getSingle('videos', id, function(err, item){
-    if(item===null){
+    if(err){
       res.send(404);
     } else {
       res.send(200, item);
     }
   });
+};
+
+exports.getRelated = function(req, res, next) {
+  var rawFields = req.params.fields;
+  var fields = {};
+  
+  if(!rawFields){
+    // default fields to return
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'status':true, 'channels':true};
+  } else {
+    // get fields from parameter
+    var fieldsSplit = rawFields.split(",");
+    for (var i = 0; i < fieldsSplit.length; i++){
+      fields[fieldsSplit[i]] = true;
+    }
+  }
+  
+  var dbArguments = {model: 'videos', id: req.params.id, fields: fields, order: 'created'};
+  
+  // if a limit was set, make sure it's a number then pass it to the DB
+  if(req.params.limit){
+    if(validation.isInt(req.params.limit)){
+      dbArguments.limit = parseInt(req.params.limit, 10);
+    }
+  }
+  
+  db.getSingle('videos', req.params.id, function(err, item){
+    if(err){
+      res.send(404);
+    } else {
+      async.parallel({
+          studio: function(callback){
+            var sArguments = JSON.parse(JSON.stringify(dbArguments));
+            
+            sArguments.studio = item.studio.uid;
+            sArguments.indexKey = 'studioId';
+            
+            db.getRelated(sArguments, 'studio', function(err, items){
+                if(err){
+                  callback(err, null);
+                } else {
+                  callback(null, items);
+                }
+            });
+          },
+          channels: function(callback){
+            var cArguments = JSON.parse(JSON.stringify(dbArguments));
+            cArguments.channels = item.channels[0];
+            
+            db.getRelated(cArguments, 'channels', function(err, items){
+                if(err){
+                  callback(err, null);
+                } else {
+                  callback(null, items);
+                }
+            });
+          }
+      },
+      function(err, results) {
+          var envelope = {};
+          envelope.items = results;
+          res.send(200, envelope);
+      });
+    }
+  });
+  
 };
 
 exports.create = function(req, res, next) {

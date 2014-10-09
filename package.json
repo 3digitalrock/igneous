@@ -4,6 +4,7 @@
   "main": "server.js",
   "private": true,
   "dependencies": {
+    "async": "^0.9.0",
     "chance": "*",
     "fast-json-patch": "^0.4.0",
     "restify": "*",

@@ -15,6 +15,7 @@ server.use(restify.queryParser({mapParams:false}));
 server.get('/videos', function(req, res, next){models.Videos.getAll(req, res, next)});
 server.post('/videos', function(req, res, next){models.Videos.create(req, res, next)});
 server.get('/videos/:id', function(req, res, next){models.Videos.getSingle(req, res, next)});
+server.get('/videos/:id/related', function(req, res, next){models.Videos.getRelated(req, res, next)});
 server.patch('/videos/:id', function(req, res, next){models.Videos.update(req, res, next);});
 server.del('/videos/:id', function(req, res, next){models.Videos.delete(req, res, next)});
 
