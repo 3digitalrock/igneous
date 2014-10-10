@@ -73,7 +73,7 @@ exports.getChannelVideos = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var uid = req.params.id;
-  var rawFields = req.params.fields;
+  var rawFields = req.query.fields;
   var fields = {};
   
   if(!rawFields){
