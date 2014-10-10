@@ -55,12 +55,12 @@ exports.getAll = function(req, res, next) {
 
 exports.getSingle = function(req, res, next) {
   var id = req.params.id;
-  var rawFields = req.params.fields;
+  var rawFields = req.query.fields;
   var fields = {};
   
   if(!rawFields){
     // default fields to return
-    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'created':true};
+    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'slug':true, 'files':true, 'created':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -69,15 +69,27 @@ exports.getSingle = function(req, res, next) {
     }
   }
   
-  db.getSingle('videos', id, function(err, item){
-    if(err){
-      return next(new restify.InternalError('Server error. Please try again later.'));
-    } else if (item===null){
-      return next(new restify.ResourceNotFoundError("Video not found"));
-    } else {
-      res.send(200, item);
-    }
-  });
+  if(fields.all){
+    db.getSingle('videos', id, function(err, item){
+      if(err){
+        return next(new restify.InternalError('Server error. Please try again later.'));
+      } else if (item===null){
+        return next(new restify.ResourceNotFoundError("Video not found"));
+      } else {
+        res.send(200, item);
+      }
+    });
+  } else {
+    db.getPlucked('videos', id, fields, function(err, item){
+      if(err){
+        return next(new restify.InternalError('Server error. Please try again later.'));
+      } else if (item===null){
+        return next(new restify.ResourceNotFoundError("Video not found"));
+      } else {
+        res.send(200, item);
+      }
+    });
+  }
 };
 
 exports.getRelated = function(req, res, next) {

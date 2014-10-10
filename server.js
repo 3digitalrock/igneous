@@ -4,12 +4,19 @@ var restify = require('restify'),
     bunyan = require('bunyan'),
     bunyanLogentries = require('bunyan-logentries');
     
+var config = require('./config/'+(process.env.NODE_ENV || 'dev')+'.json');
+var Analytics = require('analytics-node');
+var analytics = new Analytics(config.segment.writeKey, { flushAt: 1 });
+
+var Chance = require('chance'),
+    chance = new Chance();
+    
 var log = bunyan.createLogger({
   name: 'igneous',
   streams: [
     {
       level: 'info',
-      stream: bunyanLogentries.createStream({token: 'c484fd52-7140-498e-889d-eed40a55a09f'}),  // log INFO and above to bunyanLogentries
+      stream: bunyanLogentries.createStream({token: config.bunyan.token}),  // log INFO and above to bunyanLogentries
       type: 'raw'
     },
     {
@@ -30,9 +37,24 @@ server.use(restify.fullResponse());
 server.use(restify.bodyParser({mapParams:false}));
 server.use(restify.queryParser({mapParams:false}));
 
-server.get('/videos', function(req, res, next){models.Videos.getAll(req, res, next)});
+server.get('/videos', function(req, res, next){
+  analytics.track({
+    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    event: 'Get videos'
+  });
+  models.Videos.getAll(req, res, next)});
+
 server.post('/videos', function(req, res, next){models.Videos.create(req, res, next)});
-server.get('/videos/:id', function(req, res, next){models.Videos.getSingle(req, res, next)});
+server.get('/videos/:id', function(req, res, next){
+  analytics.track({
+    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    event: 'Get video',
+    properties: {
+      videoID: req.params.id
+    }
+  });
+  models.Videos.getSingle(req, res, next)});
+  
 server.get('/videos/:id/related', function(req, res, next){models.Videos.getRelated(req, res, next)});
 server.patch('/videos/:id', function(req, res, next){models.Videos.update(req, res, next);});
 server.del('/videos/:id', function(req, res, next){models.Videos.delete(req, res, next)});

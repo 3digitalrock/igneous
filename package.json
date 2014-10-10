@@ -4,6 +4,7 @@
   "main": "server.js",
   "private": true,
   "dependencies": {
+    "analytics-node": "^1.1.0",
     "async": "^0.9.0",
     "bunyan": "^1.1.3",
     "bunyan-logentries": "^0.1.0",
