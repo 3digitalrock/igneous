@@ -1,10 +1,28 @@
 // load requirements
 var restify = require('restify'),
-    models = require('./models');
+    models = require('./models'),
+    bunyan = require('bunyan'),
+    bunyanLogentries = require('bunyan-logentries');
+    
+var log = bunyan.createLogger({
+  name: 'igneous',
+  streams: [
+    {
+      level: 'info',
+      stream: bunyanLogentries.createStream({token: 'c484fd52-7140-498e-889d-eed40a55a09f'}),  // log INFO and above to bunyanLogentries
+      type: 'raw'
+    },
+    {
+      level: 'error',
+      path: './error.log'  // log ERROR and above to a file
+    }
+  ]
+});
 
 var server = restify.createServer({
   name: 'igneous',
-  version: '0.1.0'
+  version: '0.1.0',
+  log: log
 });
 
 // API v1
@@ -32,6 +50,11 @@ server.get('/studios/:id', function(req, res, next){models.Studios.getSingle(req
 server.get('/studios/:id/videos', function(req, res, next){models.Studios.getStudioVideos(req, res, next)});
 server.patch('/studios/:id', function(req, res, next){models.Studios.update(req, res, next)});
 server.del('/studios/:id', function(req, res, next){models.Studios.delete(req, res, next)});
+
+server.use(function(err, req, res, next) {
+    log.error(err);
+    res.send(err.status || 500);
+});
 
 server.listen(3001, function () {
     console.info(' ✈ ApiServer listening at http://localhost:3001');
