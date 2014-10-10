@@ -1,8 +1,8 @@
-var db = require('../lib/rethinkdb'),
+var restify = require('restify'),
+    db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
     slug = require('slug'),
     async = require('async'),
-    chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
     jsonpatch = require('fast-json-patch');
 
 Array.prototype.toLowerCase = function() { 
@@ -71,7 +71,9 @@ exports.getSingle = function(req, res, next) {
   
   db.getSingle('videos', id, function(err, item){
     if(err){
-      res.send(404);
+      return next(new restify.InternalError('Server error. Please try again later.'));
+    } else if (item===null){
+      return next(new restify.ResourceNotFoundError("Video not found"));
     } else {
       res.send(200, item);
     }
@@ -104,7 +106,9 @@ exports.getRelated = function(req, res, next) {
   
   db.getSingle('videos', req.params.id, function(err, item){
     if(err){
-      res.send(404);
+      return next(new restify.InternalError('Server error. Please try again later.'));
+    } else if (item===null){
+      return next(new restify.ResourceNotFoundError("Video not found"));
     } else {
       async.parallel({
           studio: function(callback){
@@ -183,8 +187,12 @@ exports.create = function(req, res, next) {
     req.body.studio = { 'uid': result.uid, 'name': result.name };
     
     db.create('videos', req.body, function(err, url){
-      res.send(201, url);
-      return next();
+      if(err){
+        return next(new restify.InternalError('Server error. Please try again later.'));
+      } else {
+        res.send(201, url);
+        return next();
+      }
     });
   });
 
@@ -198,8 +206,10 @@ exports.update = function(req, res, next) {
   body.updated = date.toISOString();
 
   db.getSingle('videos', id, function(err, oldItem){
-    if(oldItem===null){
-      res.send(404);
+    if(err){
+      return next(new restify.InternalError('Server error. Please try again later.'));
+    } else if(oldItem===null){
+      return next(new restify.ResourceNotFoundError("Video not found"));
     } else {
       if(jsonpatch.apply(oldItem, body)){
         db.update('videos', id, oldItem, function(err, newItem){
@@ -214,6 +224,8 @@ exports.update = function(req, res, next) {
 exports.delete = function(req, res, next) {
   var id = req.params.id;
   db.delete('videos', id, function(err, returnCode){
+    console.log(err);
+    console.log(returnCode);
     res.send(204);
     return next();
   });
