@@ -195,7 +195,7 @@ exports.create = function(req, res, next) {
   req.body.status = "3";
   
   var fields = ['uid','name'];
-  db.getPlucked('studios', req.body.studio, fields, function(err, result){
+  db.getPlucked('studios', req.body.studio.uid, fields, function(err, result){
     req.body.studio = { 'uid': result.uid, 'name': result.name };
     
     db.create('videos', req.body, function(err, url){
