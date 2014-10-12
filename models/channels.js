@@ -62,6 +62,12 @@ exports.getChannelVideos = function(req, res, next) {
       dbArguments.limit = parseInt(req.query.limit, 10);
     }
   }
+  
+  dbArguments.approved = false;
+  
+  if(req.query.approved){
+    dbArguments.approved = true;
+  }
 
   db.getChannelVideos(dbArguments, function(err, items){
     var envelope = {};
