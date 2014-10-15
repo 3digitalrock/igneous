@@ -26,7 +26,7 @@ var log = bunyan.createLogger({
   ]
 });
 
-var server = restify.createServer({
+var server = module.exports = restify.createServer({
   name: 'igneous',
   version: '0.1.0',
   log: log

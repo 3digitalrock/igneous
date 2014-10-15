@@ -18,5 +18,15 @@
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/3-digital-rock/igneous.git"
+  },
+  "devDependencies": {
+    "hippie": "^0.3.0",
+    "mocha": "^1.21.5",
+    "should": "^4.0.4",
+    "supertest": "^0.14.0"
+  },
+  "scripts": {
+    "test": "npm run test-node",
+    "test-node": "node node_modules/mocha/bin/mocha -R spec ./test/routes.js"
   }
 }
