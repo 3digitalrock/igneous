@@ -5,7 +5,8 @@ dotenv._setEnvs();
 var restify = require('restify'),
     models = require('./models'),
     bunyan = require('bunyan'),
-    bunyanLogentries = require('bunyan-logentries');
+    bunyanLogentries = require('bunyan-logentries'),
+    packageinfo = require('./package.json');
 
 var Analytics = require('analytics-node');
 var analytics = new Analytics(process.env.SEGMENT_WRITEKEY, { flushAt: 1 });
@@ -30,7 +31,7 @@ var log = bunyan.createLogger({
 
 var server = module.exports = restify.createServer({
   name: 'igneous',
-  version: '0.1.0',
+  version: packageinfo.version,
   log: log
 });
 
