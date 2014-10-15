@@ -1,12 +1,14 @@
-// load requirements
+var dotenv = require('dotenv');
+dotenv._getKeysAndValuesFromEnvFilePath('./config/.env');
+dotenv._setEnvs();
+
 var restify = require('restify'),
     models = require('./models'),
     bunyan = require('bunyan'),
     bunyanLogentries = require('bunyan-logentries');
-    
-var config = require('./config/'+(process.env.NODE_ENV || 'dev')+'.json');
+
 var Analytics = require('analytics-node');
-var analytics = new Analytics(config.segment.writeKey, { flushAt: 1 });
+var analytics = new Analytics(process.env.SEGMENT_WRITEKEY, { flushAt: 1 });
 
 var Chance = require('chance'),
     chance = new Chance();
@@ -16,7 +18,7 @@ var log = bunyan.createLogger({
   streams: [
     {
       level: 'info',
-      stream: bunyanLogentries.createStream({token: config.bunyan.token}),  // log INFO and above to bunyanLogentries
+      stream: bunyanLogentries.createStream({token: process.env.BUNYAN_TOKEN}),  // log INFO and above to bunyanLogentries
       type: 'raw'
     },
     {

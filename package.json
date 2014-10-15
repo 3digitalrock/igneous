@@ -9,6 +9,7 @@
     "bunyan": "^1.1.3",
     "bunyan-logentries": "^0.1.0",
     "chance": "*",
+    "dotenv": "^0.4.0",
     "fast-json-patch": "^0.4.0",
     "restify": "*",
     "rethinkdb": "*",
