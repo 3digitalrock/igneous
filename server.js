@@ -80,6 +80,8 @@ server.use(function(err, req, res, next) {
     res.send(err.status || 500);
 });
 
-server.listen(3001, function () {
-    console.info(' ✈ ApiServer listening at http://localhost:3001');
+if(dotenv.keys_and_values.PORT) process.env.PORT=dotenv.keys_and_values.PORT;
+
+server.listen(process.env.PORT, function () {
+    console.info(' ✈ ApiServer listening at http://localhost:'+process.env.PORT);
 });
