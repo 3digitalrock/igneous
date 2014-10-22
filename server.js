@@ -76,6 +76,22 @@ server.get('/studios/:id/videos', function(req, res, next){models.Studios.getStu
 server.patch('/studios/:id', function(req, res, next){models.Studios.update(req, res, next)});
 server.del('/studios/:id', function(req, res, next){models.Studios.delete(req, res, next)});
 
+server.get('/trailers', function(req, res, next){
+  analytics.track({
+    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    event: 'Get trailers'
+  });
+  models.Trailers.getAll(req, res, next)});
+server.get('/trailers', function(req, res, next){
+  analytics.track({
+    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    event: 'Get trailers'
+  });
+  models.Trailers.getSingle(req, res, next)});
+server.post('/trailers', function(req, res, next){models.Trailers.create(req, res, next)});
+server.patch('/trailers/:id', function(req, res, next){models.Trailers.update(req, res, next);});
+server.del('/trailers/:id', function(req, res, next){models.Trailers.delete(req, res, next)});
+
 server.use(function(err, req, res, next) {
     log.error(err);
     res.send(err.status || 500);
