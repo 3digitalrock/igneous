@@ -40,6 +40,14 @@ server.use(restify.fullResponse());
 server.use(restify.bodyParser({mapParams:false}));
 server.use(restify.queryParser({mapParams:false}));
 
+server.use(
+  function crossOrigin(req,res,next){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    return next();
+  }
+);
+
 server.get('/videos', function(req, res, next){
   analytics.track({
     anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
@@ -82,12 +90,6 @@ server.get('/trailers', function(req, res, next){
     event: 'Get trailers'
   });
   models.Trailers.getAll(req, res, next)});
-server.get('/trailers', function(req, res, next){
-  analytics.track({
-    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
-    event: 'Get trailers'
-  });
-  models.Trailers.getSingle(req, res, next)});
 server.post('/trailers', function(req, res, next){models.Trailers.create(req, res, next)});
 server.patch('/trailers/:id', function(req, res, next){models.Trailers.update(req, res, next);});
 server.del('/trailers/:id', function(req, res, next){models.Trailers.delete(req, res, next)});

@@ -215,22 +215,33 @@ exports.update = function(req, res, next) {
       body = req.body;
 
   var date = new Date();
-  body.updated = date.toISOString();
-
-  db.getSingle('videos', id, function(err, oldItem){
-    if(err){
-      return next(new restify.InternalError('Server error. Please try again later.'));
-    } else if(oldItem===null){
-      return next(new restify.ResourceNotFoundError("Video not found"));
-    } else {
-      if(jsonpatch.apply(oldItem, body)){
-        db.update('videos', id, oldItem, function(err, newItem){
-          res.send(200,{message: 'Great Success!'});
-          return next();
+  body.push({op: 'replace', path: '/updated', value: date.toISOString()});
+  
+  if(body[0].path==='/studio/uid'){
+    db.getSingle('studios', body[0].value, function(err, studio){
+      if(err){
+        return next(new restify.InternalError('Server error. Please try again later.'));
+      } else if(studio===null){
+        return next(new restify.ResourceNotFoundError("Studio not found"));
+      } else {
+        body.push({op: 'replace', path: '/studio/name', value: studio.name});
+        db.getSingle('videos', id, function(err, oldItem){
+          if(err){
+            return next(new restify.InternalError('Server error. Please try again later.'));
+          } else if(oldItem===null){
+            return next(new restify.ResourceNotFoundError("Video not found"));
+          } else {
+            if(jsonpatch.apply(oldItem, body)){
+              db.update('videos', id, oldItem, function(err, newItem){
+                res.send(200,{message: 'Great Success!'});
+                return next();
+              });
+            }
+          }
         });
       }
-    }
-  });
+    });
+  }
 };
 
 exports.delete = function(req, res, next) {
