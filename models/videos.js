@@ -188,7 +188,7 @@ exports.create = function(req, res, next) {
   req.body.channels.toLowerCase();
   
   // "slugify" the title
-  req.body.slug = slug(req.body.title.toLowerCase(), {symbols: false});
+  req.body.slug = slug(req.body.title.toLowerCase(), {symbols: false, remove: /[.]/g,});
   
   var date = new Date();
   req.body.created = req.body.updated = date.toISOString();
