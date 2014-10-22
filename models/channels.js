@@ -30,6 +30,9 @@ exports.getAll = function(req, res, next) {
     }
   }
   
+  dbArguments.order = 'uid';
+  dbArguments.orderAsc = true;
+  
   db.getAll(dbArguments, function(err, items){
     var envelope = {};
     
