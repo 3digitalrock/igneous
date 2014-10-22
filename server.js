@@ -35,6 +35,8 @@ var server = module.exports = restify.createServer({
   log: log
 });
 
+var anonId = chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
+
 // API v1
 server.use(restify.fullResponse());
 server.use(restify.bodyParser({mapParams:false}));
@@ -50,7 +52,7 @@ server.use(
 
 server.get('/videos', function(req, res, next){
   analytics.track({
-    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    anonymousId: anonId,
     event: 'Get videos'
   });
   models.Videos.getAll(req, res, next)});
@@ -58,7 +60,7 @@ server.get('/videos', function(req, res, next){
 server.post('/videos', function(req, res, next){models.Videos.create(req, res, next)});
 server.get('/videos/:id', function(req, res, next){
   analytics.track({
-    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    anonymousId: anonId,
     event: 'Get video',
     properties: {
       videoID: req.params.id
@@ -86,7 +88,7 @@ server.del('/studios/:id', function(req, res, next){models.Studios.delete(req, r
 
 server.get('/trailers', function(req, res, next){
   analytics.track({
-    anonymousId: chance.string({length: 10, pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'}),
+    anonymousId: anonId,
     event: 'Get trailers'
   });
   models.Trailers.getAll(req, res, next)});
