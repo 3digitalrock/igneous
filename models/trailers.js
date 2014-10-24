@@ -10,7 +10,7 @@ exports.getAll = function(req, res, next) {
 
   if(!rawFields){
     // default fields to return
-    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'files':true, 'order':true};
+    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'files':true, 'order':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -31,45 +31,6 @@ exports.getAll = function(req, res, next) {
       res.send(200, envelope);
     }
   });
-};
-
-exports.getSingle = function(req, res, next) {
-  var id = req.params.id;
-  var rawFields = req.query.fields;
-  var fields = {};
-  
-  if(!rawFields){
-    // default fields to return
-    fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'files':true};
-  } else {
-    // get fields from parameter
-    var fieldsSplit = rawFields.split(",");
-    for (var i = 0; i < fieldsSplit.length; i++){
-      fields[fieldsSplit[i]] = true;
-    }
-  }
-  
-  if(fields.all){
-    db.getSingle('trailers', id, function(err, item){
-      if(err){
-        return next(new restify.InternalError('Server error. Please try again later.'));
-      } else if (item===null){
-        return next(new restify.ResourceNotFoundError("Trailer not found"));
-      } else {
-        res.send(200, item);
-      }
-    });
-  } else {
-    db.getPlucked('trailers', id, fields, function(err, item){
-      if(err){
-        return next(new restify.InternalError('Server error. Please try again later.'));
-      } else if (item===null){
-        return next(new restify.ResourceNotFoundError("Trailer not found"));
-      } else {
-        res.send(200, item);
-      }
-    });
-  }
 };
 
 exports.create = function(req, res, next) {
@@ -120,8 +81,6 @@ exports.update = function(req, res, next) {
 exports.delete = function(req, res, next) {
   var id = req.params.id;
   db.delete('trailers', id, function(err, returnCode){
-    console.log(err);
-    console.log(returnCode);
     res.send(204);
     return next();
   });
