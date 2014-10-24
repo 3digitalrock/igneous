@@ -69,7 +69,7 @@ server.get('/videos/:id', function(req, res, next){
   models.Videos.getSingle(req, res, next)});
   
 server.get('/videos/:id/related', function(req, res, next){models.Videos.getRelated(req, res, next)});
-server.patch('/videos/:id', function(req, res, next){models.Videos.update(req, res, next);});
+server.patch('/videos/:id', function(req, res, next){models.Videos.update(req, res, next)});
 server.del('/videos/:id', function(req, res, next){models.Videos.delete(req, res, next)});
 
 server.get('/channels', function(req, res, next){models.Channels.getAll(req, res, next)});
@@ -93,7 +93,7 @@ server.get('/trailers', function(req, res, next){
   });
   models.Trailers.getAll(req, res, next)});
 server.post('/trailers', function(req, res, next){models.Trailers.create(req, res, next)});
-server.patch('/trailers/:id', function(req, res, next){models.Trailers.update(req, res, next);});
+server.patch('/trailers/:id', function(req, res, next){models.Trailers.update(req, res, next)});
 server.del('/trailers/:id', function(req, res, next){models.Trailers.delete(req, res, next)});
 
 server.use(function(err, req, res, next) {

@@ -10,7 +10,7 @@ exports.getAll = function(req, res, next) {
 
   if(!rawFields){
     // default fields to return
-    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'files':true};
+    dbArguments.fields = {'uid':true, 'title':true, 'description':true, 'thumbnails':true, 'files':true, 'order':true};
   } else {
     // get fields from parameter
     var fieldsSplit = rawFields.split(",");
@@ -87,15 +87,14 @@ exports.create = function(req, res, next) {
     }
   });
 
-    db.create('trailers', req.body, function(err, url){
-      if(err){
-        return next(new restify.InternalError('Server error. Please try again later.'));
-      } else {
-        res.send(201, url);
-        return next();
-      }
-    });
-
+  db.create('trailers', req.body, function(err, url){
+    if(err){
+      return next(new restify.InternalError('Server error. Please try again later.'));
+    } else {
+      res.send(201, url);
+      return next();
+    }
+  });
 };
 
 exports.update = function(req, res, next) {
