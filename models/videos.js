@@ -241,6 +241,21 @@ exports.update = function(req, res, next) {
         });
       }
     });
+  } else {
+    db.getSingle('videos', id, function(err, oldItem){
+      if(err){
+        return next(new restify.InternalError('Server error. Please try again later.'));
+      } else if(oldItem===null){
+        return next(new restify.ResourceNotFoundError("Video not found"));
+      } else {
+        if(jsonpatch.apply(oldItem, body)){
+          db.update('videos', id, oldItem, function(err, newItem){
+            res.send(200,{message: 'Great Success!'});
+            return next();
+          });
+        }
+      }
+    });
   }
 };
 
