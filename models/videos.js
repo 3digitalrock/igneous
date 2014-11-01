@@ -159,7 +159,7 @@ exports.getRelated = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-  var required_fields = ['title','description','channels','studio'];
+  var required_fields = ['title','description','channels'];
   // check for missing fields
   validation.doesExist(required_fields, req.body, function(exists, failed){
     if(exists === false){
