@@ -194,7 +194,7 @@ exports.create = function(req, res, next) {
   req.body.created = req.body.updated = date.toISOString();
   req.body.status = "3";
   
-  var fields = ['uid','name'];
+  /*var fields = ['uid','name'];
   db.getPlucked('studios', req.body.studio.uid, fields, function(err, result){
     req.body.studio = { 'uid': result.uid, 'name': result.name };
     
@@ -206,8 +206,15 @@ exports.create = function(req, res, next) {
         return next();
       }
     });
+  });*/
+  db.create('videos', req.body, function(err, url){
+    if(err){
+      return next(new restify.InternalError('Server error. Please try again later.'));
+    } else {
+      res.send(201, url);
+      return next();
+    }
   });
-
 };
 
 exports.update = function(req, res, next) {
