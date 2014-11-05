@@ -3,7 +3,8 @@ var restify = require('restify'),
     validation = require('../lib/validation'),
     slug = require('slug'),
     async = require('async'),
-    jsonpatch = require('fast-json-patch');
+    jsonpatch = require('fast-json-patch'),
+    crypto = require('crypto');
 
 Array.prototype.toLowerCase = function() { 
     for (var i = 0; i < this.length; i++) {
@@ -193,7 +194,7 @@ exports.create = function(req, res, next) {
   var date = new Date();
   req.body.created = req.body.updated = date.toISOString();
   req.body.status = "3";
-  
+  req.body.uid = crypto.randomBytes(Math.ceil(12/2)).toString('hex').slice(0,12);
   /*var fields = ['uid','name'];
   db.getPlucked('studios', req.body.studio.uid, fields, function(err, result){
     req.body.studio = { 'uid': result.uid, 'name': result.name };
@@ -207,11 +208,11 @@ exports.create = function(req, res, next) {
       }
     });
   });*/
-  db.create('videos', req.body, function(err, url){
+  db.create('videos', req.body, function(err, item){
     if(err){
       return next(new restify.InternalError('Server error. Please try again later.'));
     } else {
-      res.send(201, url);
+      res.send(201, item);
       return next();
     }
   });
