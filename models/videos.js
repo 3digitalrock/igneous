@@ -4,7 +4,8 @@ var restify = require('restify'),
     slug = require('slug'),
     async = require('async'),
     jsonpatch = require('fast-json-patch'),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    aws = require('../lib/aws');
 
 Array.prototype.toLowerCase = function() { 
     for (var i = 0; i < this.length; i++) {
@@ -269,10 +270,57 @@ exports.update = function(req, res, next) {
 
 exports.delete = function(req, res, next) {
   var id = req.params.id;
-  db.delete('videos', id, function(err, returnCode){
-    console.log(err);
-    console.log(returnCode);
-    res.send(204);
-    return next();
+  var files = ['videos/transcoded/'+req.params.id+'-low.mp4',
+              'videos/transcoded/'+req.params.id+'-high.mp4',
+              'videos/transcoded/'+req.params.id+'.ogg',
+              'videos/transcoded/'+req.params.id+'.webm',
+              'videos/thumbnails/'+req.params.id+'_0-small.png',
+              'videos/thumbnails/'+req.params.id+'_1-small.png',
+              'videos/thumbnails/'+req.params.id+'_2-small.png',
+              'videos/thumbnails/'+req.params.id+'_0-large.png',
+              'videos/thumbnails/'+req.params.id+'_1-large.png',
+              'videos/thumbnails/'+req.params.id+'_2-large.png'];
+              
+  // Check if the video has files or thumbnails to delete
+  db.getPlucked('videos', id, ['files','thumbnails'], function(err, item){
+    if(item.files||item.thumbnails){
+      // Delete files from AWS then remove from DB
+      aws.s3DeleteService(files, function(awsErr,code){
+        if(awsErr){
+          console.log(awsErr);
+          res.status(code).send(awsErr);
+        } else {
+          db.delete('videos', id, function(dbErr, success){
+            if(dbErr){
+              console.log(dbErr);
+              res.status(500).send(dbErr);
+            } else {
+              if(success){
+                res.send(204);
+                return next();
+              } else {
+                res.send(500);
+                return next();
+              }
+            }
+          });
+        }
+      });
+    } else {
+      // Just delete from DB
+      db.delete('videos', id, function(dbErr, success){
+        if(dbErr){
+          res.status(500).send(dbErr);
+        } else {
+          if(success){
+            res.send(204);
+            return next();
+          } else {
+            res.send(500);
+            return next();
+          }
+        }
+      });
+    }
   });
 };

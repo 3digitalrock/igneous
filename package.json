@@ -11,6 +11,7 @@
     "chance": "*",
     "dotenv": "^0.4.0",
     "fast-json-patch": "^0.4.0",
+    "knox": "^0.9.1",
     "restify": "*",
     "rethinkdb": "*",
     "slug": "*",
