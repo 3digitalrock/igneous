@@ -1,6 +1,6 @@
 {
   "name": "3drs-igneous",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "main": "server.js",
   "private": true,
   "dependencies": {
@@ -8,14 +8,14 @@
     "async": "^0.9.0",
     "bunyan": "^1.1.3",
     "bunyan-logentries": "^0.1.0",
-    "chance": "*",
+    "chance": "^0.5.9",
     "dotenv": "^0.4.0",
     "fast-json-patch": "^0.4.0",
     "knox": "^0.9.1",
-    "restify": "*",
-    "rethinkdb": "*",
-    "slug": "*",
-    "validator": "*"
+    "restify": "^2.8.2",
+    "rethinkdb": "^1.13.0",
+    "slug": "^0.5.0",
+    "validator": "^3.17.1"
   },
   "devDependencies": {
     "hippie": "^0.3.0",
