@@ -9,7 +9,7 @@ var restify = require('restify'),
     packageinfo = require('./package.json');
 
 var Analytics = require('analytics-node');
-var analytics = new Analytics(process.env.SEGMENT_WRITEKEY, { flushAt: 1 });
+var analytics = new Analytics(process.env.SEGMENT_WRITEKEY);
 
 var Chance = require('chance'),
     chance = new Chance();
