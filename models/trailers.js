@@ -1,7 +1,8 @@
 var restify = require('restify'),
     db = require('../lib/rethinkdb'),
     validation = require('../lib/validation'),
-    jsonpatch = require('fast-json-patch');
+    jsonpatch = require('fast-json-patch'),
+    crypto = require('crypto');
 
 exports.getAll = function(req, res, next) {
   var dbArguments = {model: 'trailers'};
@@ -47,7 +48,9 @@ exports.create = function(req, res, next) {
       return next();
     }
   });
-
+  
+  req.body.uid = crypto.randomBytes(Math.ceil(12/2)).toString('hex').slice(0,12);
+  
   db.create('trailers', req.body, function(err, url){
     if(err){
       return next(new restify.InternalError('Server error. Please try again later.'));
