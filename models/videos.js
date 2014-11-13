@@ -14,7 +14,7 @@ Array.prototype.toLowerCase = function() {
 };
 
 exports.getAll = function(req, res, next) {
-  var dbArguments = {model: 'videos'};
+  var dbArguments = {};
   var rawFields = req.query.fields;
   dbArguments.fields = {};
 
@@ -41,9 +41,15 @@ exports.getAll = function(req, res, next) {
     }
   }
   
+  if(req.query.unapproved==='true'){
+    dbArguments.status = '5';
+  } else {
+    dbArguments.status = '2';
+  }
+  
   dbArguments.order = 'created';
 
-  db.getAll(dbArguments, function(err, items){
+  db.getAllVideos(dbArguments, function(err, items){
     if(err){
       res.send(404);
     } else {
