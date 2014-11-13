@@ -120,7 +120,7 @@ exports.getRelated = function(req, res, next) {
   // if a limit was set, make sure it's a number then pass it to the DB
   if(req.params.limit){
     if(validation.isInt(req.params.limit)){
-      dbArguments.limit = parseInt(req.params.limit, 10);
+      dbArguments.limit = parseInt(req.params.limit, 4);
     }
   }
   
