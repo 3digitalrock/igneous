@@ -1,5 +1,5 @@
-var db = require('../lib/rethinkdb'),
-    validation = require('../lib/validation'),
+var db = require('../../lib/rethinkdb'),
+    validation = require('../../lib/validation'),
     jsonpatch = require('fast-json-patch');
 
 exports.getAll = function(req, res, next) {

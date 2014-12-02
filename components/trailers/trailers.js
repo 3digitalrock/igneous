@@ -1,6 +1,6 @@
 var restify = require('restify'),
-    db = require('../lib/rethinkdb'),
-    validation = require('../lib/validation'),
+    db = require('../../lib/rethinkdb'),
+    validation = require('../../lib/validation'),
     jsonpatch = require('fast-json-patch'),
     crypto = require('crypto');
 
