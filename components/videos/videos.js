@@ -1,11 +1,11 @@
 var restify = require('restify'),
-    db = require('../lib/rethinkdb'),
-    validation = require('../lib/validation'),
+    db = require('../../lib/rethinkdb'),
+    validation = require('../../lib/validation'),
     slug = require('slug'),
     async = require('async'),
     jsonpatch = require('fast-json-patch'),
     crypto = require('crypto'),
-    aws = require('../lib/aws');
+    aws = require('../../lib/aws');
 
 Array.prototype.toLowerCase = function() { 
     for (var i = 0; i < this.length; i++) {

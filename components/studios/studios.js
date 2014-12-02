@@ -1,5 +1,5 @@
-var db = require('../lib/rethinkdb'),
-    validation = require('../lib/validation'),
+var db = require('../../lib/rethinkdb'),
+    validation = require('../../lib/validation'),
     chance = require('chance').Chance(Math.floor(Math.random()*(100-1+1)+1)),
     jsonpatch = require('fast-json-patch');
 
