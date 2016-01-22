@@ -201,7 +201,7 @@ exports.create = function(req, res, next) {
   var date = new Date();
   req.body.created = req.body.updated = date.toISOString();
   req.body.status = "3";
-  req.body.uid = crypto.randomBytes(Math.ceil(12/2)).toString('hex').slice(0,12);
+  //req.body.uid = crypto.randomBytes(Math.ceil(12/2)).toString('hex').slice(0,12);
   /*var fields = ['uid','name'];
   db.getPlucked('studios', req.body.studio.uid, fields, function(err, result){
     req.body.studio = { 'uid': result.uid, 'name': result.name };
